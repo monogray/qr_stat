@@ -70,6 +70,9 @@ class View_Core {
 	function initLayout() {
 		include_once 'layouts/mono_layouts.php';
 		$this->layout = new MonoLayouts();
+		
+		include_once 'layouts/html_entity/entity.php';
+		include_once 'layouts/html_entity/div.php';
 	}
 	
 	// HELPERS

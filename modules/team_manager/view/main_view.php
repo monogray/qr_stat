@@ -93,7 +93,8 @@ class WebStudioMainView extends View_Core{
 	}
 	
 	public function processUsers(){
-		$_controller = Array(	''				=> 'drawUsersMain');
+		$_controller = Array(	''				=> 'drawUsersMain',
+								'edit'			=> 'drawUsersEdit');
 		$this->controllerArrayProcess($_controller);
 	}
 	
@@ -326,18 +327,24 @@ class WebStudioMainView extends View_Core{
 		
 		$this->layout->Draw_DivStart('tracker_container', '');
 		$this->layout->Draw_HyperLink($this->setUrl('index'),  '&larr; back to tracker', 'back_link');
+		Div::getNew()->init('class', 'separator_1')->draw();
 		$this->layout->Draw_H1($_issue->id[0].'. '.$_issue->summary[0]);
 		
 		$this->form->formHeader( '?chapter=index&action=save_task&id='.$_issue->id[0] );
 		
 		$this->form->formSubmit('Save');
 		
-		$this->layout->Draw_DivStart('tracker_inner_area', '');
+		Div::getNew()->init('class', 'separator_1')->draw();
+		
+		Div::getNew()->init('class', 'tracker_inner_area')->drawHeader();
 			$this->form->inputText('Summary ', 50, $_issue->summary[0], 'summary');
-			
 			$this->form->inputSelect('Project ', 'project', $_issue->project_one_entity->id, $_issue->project[0], $_issue->project_one_entity->name);
+		Div::getNew()->drawFooter('tracker_inner_area');
+		
+		Div::getNew()->init('class', 'separator_1')->draw();
+		
+		$this->layout->Draw_DivStart('tracker_inner_area', '');
 			$this->form->inputTextarea('Description ', 10, 10, $_issue->steps_to_reproduce[0], 'steps_to_reproduce', 'edit_textfield');
-
 		$this->layout->Draw_DivEnd('tracker_inner_area');
 		
 		// Properties
@@ -478,11 +485,15 @@ class WebStudioMainView extends View_Core{
 		$this->layout->Draw_DivStart('tracker_container', '');
 		$this->layout->Draw_H1('Comments');
 		
+		$this->layout->Draw_DivStart('tracker_inner_area', '');
 		$this->initFormsLayouts();
 			$this->form->formHeader( '?chapter=index&action=add_comment&id='.$_issue->id[0] );
 			$this->form->inputTextarea('Message ', 10, 10, '', 'comment', 'chat_messages_textarea');
 			$this->form->formSubmit('Add comment');
 		$this->form->formFooter();
+		$this->layout->Draw_DivEnd('tracker_inner_area');
+		
+		Div::getNew()->init('class', 'separator_1')->draw();
 		
 		echo '<table class="tracker_issue_table"><tr><td>id</td><td>Comment</td><td>Author</td><td>Date</td></tr>';
 		for ($i = 0; $i < $_comments->len; $i++) {
@@ -718,9 +729,12 @@ class WebStudioMainView extends View_Core{
 		$this->layout->Draw_DivStart('tracker_container', '');
 		$this->layout->Draw_H1('Users');
 	
-		//$this->layout->Draw_HyperLink( $this->setUrl('project', 'add_project'), 'Add project <img src="modules/team_manager/public/img/add_ico.png" width="20px"/>', 'add_task_link' );
-	
-		// Projects table
+		Entity::getInstance()->init('a', 'class', 'add_task_link')
+			->addAttr('href', $this->setUrl('users', 'add'))
+			->setContent('Add user <img src="modules/team_manager/public/img/add_ico.png" width="20px"/>')
+			->draw();
+		
+		// Users table
 		echo '<table class="tracker_issue_table"><tr><td>id</td><td>Name</td><td>Mail</td><td>Phone</td></tr>';
 		for ($i = 0; $i < $_user->len; $i++) {
 			echo '<tr>';
@@ -741,6 +755,48 @@ class WebStudioMainView extends View_Core{
 		echo '</table>';
 	
 		$this->layout->Draw_DivEnd('tracker_container');
+	}
+	
+	public function drawUsersEdit() {
+		$_entity = $this->getAppData();
+		$_user = $_entity->getUsers();
+	
+		Div::getNew()->init('class', 'tracker_container')->drawHeader();
+		
+		Entity::getInstance()->init('a', 'class', 'back_link')
+			->addAttr('href', $this->setUrl('users'))
+			->setContent('&larr; back to users')
+			->draw();
+		
+		Entity::getInstance()->init('h1')->setContent($_user->name[0])->draw();
+
+		Entity::getInstance()->init('div', 'class', 'tracker_inner_area')
+			->drawHeader();
+		Entity::getInstance()->init('div', '', '')
+			->setContent('Login: '.$_user->login[0])
+			->draw()
+			->setContent('e-mail: '.$_user->mail[0])
+			->draw()
+			->setContent('Skype: '.$_user->skype[0])
+			->draw()
+			->setContent('icq: '.$_user->icq[0])
+			->draw()
+			->setContent('Phone: '.$_user->phone[0])
+			->draw();
+		Div::drawFooter_st('tracker_inner_area');
+		
+		Entity::getInstance()->init('div', 'class', 'tracker_inner_area')
+		->setContent(
+			Entity::getNew()->init('div', '', '')
+			->setContent('Personal Data:')
+		)
+		->addContent(
+			Entity::getNew()->init('div', '', '')
+			->setContent($_user->personal_data[0])
+		)
+		->draw();
+		
+		Div::drawFooter_st('tracker_container');
 	}
 }
 ?>

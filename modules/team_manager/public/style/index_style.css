@@ -1,5 +1,5 @@
 @CHARSET "UTF-8";
-/* new_vision/css/index_style.css */
+/* Team Manager Project */
 /* Version 1.0 */
 /* Author: Monogray */
 
@@ -15,6 +15,18 @@ body{
 	font-family: Verdana, Arial, Helvetica, sans-serif;
 	font-size:0.85em;
 	background: url(../../../../public/img/bg/5827.jpg)
+}
+body:before {
+	content: "";
+	position: fixed;
+	top: -10px;
+	left: 0;
+	width: 100%;
+	height: 10px;
+	z-index: 100;
+	-webkit-box-shadow: 0px 0px 15px rgba(0,0,0,.8);
+	-moz-box-shadow: 0px 0px 15px rgba(0,0,0,.8);
+	box-shadow: 0px 0px 15px rgba(0,0,0,.8);
 }
 li, menu{
 	list-style-type:none;
@@ -33,20 +45,20 @@ a{
 	width:100%;
 	color:#000000;
 	text-decoration:none;
-	-webkit-transition:color 1s ease-out;
-	-moz-transition:color 1s ease-out;
-	-o-transition:color 1s ease-out;
-	-ms-transition:color 1s ease-out;
-	transition:color 1s ease-out;
+	-webkit-transition:color 0.5s ease-out;
+	-moz-transition:color 0.5s ease-out;
+	-o-transition:color 0.5s ease-out;
+	-ms-transition:color 0.5s ease-out;
+	transition:color 0.5s ease-out;
 }
 a:hover{
 	text-decoration:underline;
-	color:rgba(0,0,0,0.5);
+	color:#00599d;
 }
 h1{
 	font-variant:small-caps;
 	margin-top:5px;
-	color:#FF5A00;
+	color:#0083de;
 	text-transform:uppercase;
 	font-size:1.5em;
 }
@@ -55,10 +67,10 @@ h2{
 	width:100%;
 	font-variant:small-caps;
 	margin-top:15px;
-	color:#FF5A00;
+	color:#0083de;
 	text-transform:uppercase;
 	font-size:1.1em;
-	border-bottom:2px solid rgba(255, 0, 0, 0.1);
+	border-bottom:2px solid rgba(0, 131, 222, 0.1);
 }
 textarea{
 	float:left;
@@ -110,6 +122,14 @@ td[name="middle_font_td_left"]{
 	margin-top:1px;
 	margin-left:5px;
 }
+.small_font_tr{
+	font-size:0.6em;
+}
+.separator_1{
+	float:left;
+	width:100%;
+	height:10px;
+}
 
 /* MAIN MENU _________________________________________________________ */
 #logo{
@@ -148,7 +168,7 @@ td[name="middle_font_td_left"]{
 	width:100%;
 	margin-bottom:2px;
 	font-size:1.2em;
-	border-bottom:3px solid rgba(255, 0, 0, 0.3);
+	border-bottom:3px solid rgba(0, 131, 222, 0.3);
 	text-decoration:none;
 }
 #online_users{
@@ -192,6 +212,10 @@ td[name="middle_font_td_left"]{
 	background-color:rgba(0, 0, 0, 0.05);
 	border-radius:5px;
 	margin-bottom:8px;
+	
+	-webkit-box-shadow: 0px 0px 10px rgba(0,0,0,.4);
+	-moz-box-shadow: 0px 0px 10px rgba(0,0,0,.4);
+	box-shadow: 0px 0px 10px rgba(0,0,0,.4);
 }
 .tracker_inner_container_50{
 	float:left;
@@ -201,6 +225,10 @@ td[name="middle_font_td_left"]{
 	border-radius:5px;
 	margin-bottom:8px;
 	margin-right:0.5%;
+	
+	-webkit-box-shadow: 0px 0px 10px rgba(0,0,0,.4);
+	-moz-box-shadow: 0px 0px 10px rgba(0,0,0,.4);
+	box-shadow: 0px 0px 10px rgba(0,0,0,.4);
 }
 .tracker_caption{
 	float:left;
@@ -254,9 +282,6 @@ td[name="middle_font_td_left"]{
 	border-bottom:2px solid rgba(0, 0, 0, 0.5);
 	background: url(../../../../modules/team_manager/public/img/lines.png);
 }
-.small_font_tr{
-	font-size:0.6em;
-}
 .tracker_inner_area{
 	float:left;
 	width:99%;
@@ -266,12 +291,19 @@ td[name="middle_font_td_left"]{
 	border:1px solid rgba(0, 0, 0, 0.1);
 	margin-left:-1px;
 	margin-bottom:3px;
+	
+	-webkit-box-shadow: 0px 0px 10px rgba(0,0,0,.1);
+	-moz-box-shadow: 0px 0px 10px rgba(0,0,0,.1);
+	box-shadow: 0px 0px 10px rgba(0,0,0,.1);
+}
+.tracker_inner_area:hover{
+	background: url(../../../../modules/team_manager/public/img/lines.png);
 }
 .rad_issue{
 	background-color:rgba(255, 0, 0, 0.2);
 }
 .blue_issue{
-	background-color:rgba(0, 144, 255, 0.2);
+	background-color:rgba(78, 166, 234, 0.4);
 }
 .green_issue{
 	background-color:rgba(168, 244, 6, 0.2);
@@ -299,7 +331,6 @@ td[name="middle_font_td_left"]{
 .attach_drop_confirm_bt{
 	font-weight:bold;
 }
-
 
 /* ISSUE HISTORY _________________________________________________________ */
 #history_inner_area{
