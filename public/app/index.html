@@ -1,0 +1,88 @@
+
+<!DOCTYPE html>
+<html> 
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=Windows-1251" />
+		<meta name="description" content="" />
+		<meta name="keywords" http-equiv="keywords" content=""/>
+		
+		<link rel="stylesheet" type="text/css" href="css/index_style.css" />
+		<script type="text/javascript" src="http://code.jquery.com/jquery-latest.min.js"></script>
+		
+		<script type="text/javascript">
+		</script>
+	</head>
+    <body>
+    	<script>
+    		var current_id;
+    		var tmp_id;
+    		
+	    	function displayData(id){
+	    		getPage(id);
+	    	}
+	    	
+	    	function getPage(_id){
+	    		current_id = _id;
+	    		if(current_id != tmp_id){
+	    			tmp_id = current_id;
+		    		$.ajax({
+	    			  url: 'http://test1.ru/qr_stat/index.php?chapter=admin&action=guests_info_preview&id='+current_id,
+	    			  success: function(data) {
+	    				$('#view_area').css('opacity', 0);
+	    				$('#view_area').css('margin-left', -1300);
+	    			    $('#view_area').html(data);
+	    			    $('#view_area').animate({
+	    			        opacity: 1,
+	    			        marginLeft:-412
+	    			      }, 500, function() {
+	    			        // Animation complete.
+	    			      });
+	    			    //alert('Load was performed.');
+	    			  }
+	    			});
+	    		}
+	    	}
+	    	
+	    	function registration(_id, _reg_id){
+	    		current_id = _id;
+	    		if(current_id != tmp_id){
+	    			tmp_id = current_id;
+		    		$.ajax({
+	    			  url: 'http://test1.ru/qr_stat/index.php?chapter=admin&action=guests_register_event&id='+current_id+'&sub_id='+_reg_id,
+	    			  success: function(data) {
+	    			    $('#view_area').html(data);
+	    			  }
+	    			});
+	    		}
+	    	}
+	    	
+    	</script>
+    	
+    	<img src="img/bg2.jpg" id="background"/>
+		
+		<!--<object classid="" codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=10,0,0,0" width="1024" height="768" id="bonesShape3" align="middle" data="qr_manager.swf">
+			<param name="allowScriptAccess" value="sameDomain">
+			<param name="allowFullScreen" value="false">
+			<param name="movie" value="qr_manager.swf">
+			<param name="quality" value="High">
+			<param name="bgcolor" value="#ffffff">
+			<embed src="qr_manager.swf" quality="High" bgcolor="#ffffff" width="1024" height="768" name="bonesShape3" align="middle" allowscriptaccess="sameDomain" allowfullscreen="false" type="application/x-shockwave-flash" pluginspage="http://www.adobe.com/go/getflashplayer">
+		</object>-->
+		
+		<div id="view_area">
+		</div>
+		
+		<embed
+			id="game_object"
+			width="350px"
+			height="600px"
+			name="FacebookGame"
+			wmode="transparent"
+			allowfullscreen="true"
+			allowScriptAccess="sameDomain"
+			FlashVars=""
+			src="qr_manager.swf" 
+			type="application/x-shockwave-flash"
+		/>
+</body>
+</html> 
