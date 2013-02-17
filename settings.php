@@ -10,12 +10,22 @@ class Settings {
 	public static $db_pass		= '5e038c07';
 	public static $db_name		= 'gbua_nvt_db';
 	
-	public static $db_table_prefix_name = 'mono_';
-	public static $path_to_user_class_file = 'model/task_traker/users.php';
-	public static $path_to_attachments_dir = '../team_manager/';
-	//public static $db_table_prefix_name = 'qr_manager_';
+	// Team Manager
+	//public static $db_table_prefix_name = 'mono_';
+	//public static $path_to_user_class_file = 'model/task_traker/users.php';
+	//public static $path_to_attachments_dir = '../team_manager/';
 	
-	private static $current_user;
+	// QR State
+	//public static $db_table_prefix_name = 'qr_manager_';
+	//public static $path_to_user_class_file = 'model/bd_tables/users.php';
+	//public static $path_to_attachments_dir = './attach/';
+	
+	// Web studio
+	public static $db_table_prefix_name = 'webstudio_';
+	public static $path_to_user_class_file = 'model/bd_tables/users.php';
+	public static $path_to_attachments_dir = './modules/web_studio/public/attach/';
+	
+	private static $current_user;							// User entity. Contains a instance of current user
 	
 	public static function isUserLogined() {
 		if(isset(self::$current_user) && self::$current_user->len == 1){

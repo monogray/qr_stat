@@ -34,10 +34,16 @@ class ViewEntitiesCore {
 					<meta name="keywords" http-equiv="keywords" content="'.$this->template->keywords.'"/>
 			
 					<link rel="stylesheet" type="text/css" href="'.$this->template->stylesheet_path.'" />
-					<script type="text/javascript" src="'.$this->template->jquery_path.'"></script>
-				</head>
+					<script type="text/javascript" src="'.$this->template->jquery_path.'"></script>';
+		
+		$this->drawInHeader();
+		
+		echo '</head>
 	
 			<body>';
+	}
+	
+	protected function drawInHeader() {
 	}
 	
 	protected function drawTop() {
@@ -64,9 +70,9 @@ class ViewEntitiesCore {
 	}
 	
 	// SETTERS
-	public function setDBConnect($_db_connect) {
-		$this->db_connect = $_db_connect;
-	}
+	//public function setDBConnect($_db_connect) {
+		//$this->db_connect = $_db_connect;
+	//}
 	
 	public function setAppData($_app_data) {
 		$this->app_data = $_app_data;
@@ -77,9 +83,9 @@ class ViewEntitiesCore {
 	}
 
 	// GETTERS
-	public function getDBConnect() {
-		return $this->db_connect;
-	}
+	//public function getDBConnect() {
+		//return $this->db_connect;
+	//}
 	
 	public function getAppData() {
 		return $this->app_data;

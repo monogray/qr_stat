@@ -191,14 +191,16 @@ class Issue extends Table_Entity{
 			$_old_issue = new Issue();
 			$_old_issue->getOneItem($_id);
 			
-			$_summary = $_POST['summary'];
-			$_project = $_POST['project'];
-			$_steps_to_reproduce = htmlspecialchars($_POST['steps_to_reproduce']);
-			$_type = $_POST['type'];
-			$_assigned_to = $_POST['assigned_to'];
-			$_priority = $_POST['priority'];
-			$_status = $_POST['status'];
-			$_progress = $_POST['progress'];
+			$_summary				= $_POST['summary'];
+			$_project				= $_POST['project'];
+			$_steps_to_reproduce	= htmlspecialchars($_POST['steps_to_reproduce']);
+			$_type					= $_POST['type'];
+			$_assigned_to			= $_POST['assigned_to'];
+			$_priority				= $_POST['priority'];
+			$_status				= $_POST['status'];
+			$_progress				= $_POST['progress'];
+			$_start_date			= $_POST['start_date'].date(" H:i:s");
+			$_execute_to			= $_POST['execute_to'].date(" H:i:s");
 			
 			$q = 'UPDATE '.$this->table_name.' SET
 				summary				= "'.$_summary.'",
@@ -209,7 +211,9 @@ class Issue extends Table_Entity{
 				priority			= "'.$_priority.'",
 				status				= "'.$_status.'",
 				progress			= "'.$_progress.'",
-				update_date			= "'.date("Y-m-d H:i:s").'"
+				update_date			= "'.date("Y-m-d H:i:s").'",
+				start_date			= "'.$_start_date.'",
+				execute_to			= "'.$_execute_to.'"
 				WHERE id = '.$_id.' LIMIT 1;';
 			$this->run_query($q);
 			

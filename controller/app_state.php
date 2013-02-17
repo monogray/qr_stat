@@ -7,7 +7,7 @@ class AppState {
 	public $sub_id;
 	
 	// User Data
-	public $user_logined = false;
+	//public $user_logined = false;
 
 	function AppState() {
 	}
@@ -102,9 +102,9 @@ class AppState {
 		$this->sub_id = $_sub_id;
 	}
 	
-	private function setUserLogined($_user_logined) {
-		$this->user_logined = $_user_logined;
-	}
+	//private function setUserLogined($_user_logined) {
+		//$this->user_logined = $_user_logined;
+	//}
 	
 	
 	// GETTERS

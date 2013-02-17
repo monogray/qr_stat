@@ -13,20 +13,7 @@ class IndexController extends CoreController {
 	}
 	
 	public function process() {
-		//parent::process();
-		
-		if( Settings::isUserLogined() ){
-			if($this->app_state->getChapter() == 'index'){
-				$this->processIndex();
-			}
-			/*else if($this->app_state->getActionInner() == $this->entity_actions['list']){
-				$this->processList();
-			}*/
-		}else{
-			if($this->app_state->getChapter() == 'index'){
-				$this->processIndex();
-			}
-		}
+		$this->processIndex();
 	}
 	
 	protected function processIndex() {

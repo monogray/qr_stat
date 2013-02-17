@@ -7,11 +7,10 @@ include_once 'view/main_view.php';
 class MainController {
 	private $db_connect;
 	private $app_state;
+	private $app_data;
 	
 	private $model;
 	private $view;
-	
-	private $app_data;
 
 	function MainController($_db_connect) {
 		$this->setDBConnect($_db_connect);
@@ -31,7 +30,9 @@ class MainController {
 		
 		$this->view->setAppData($this->app_data);
 		
-		$this->controllerProcess();
+		//$this->controllerProcess();
+		
+		$this->controllerProcess_siteCore();
 	}
 	
 	private function controllerProcess() {
@@ -39,6 +40,57 @@ class MainController {
 		$_controller = new TeamManagerController();
 		$_controller->init($this->app_state);
 		$_controller->process();
+	}
+	
+	private function controllerProcess_siteCore() {
+		// Back-end
+		if($this->app_state->getChapter() == 'admin'){
+			// Site Framework
+			if($this->app_state->getAction() == ''){
+				$this->view->draw('draw_Admin_IndexPage');
+			}
+			else if( substr($this->app_state->getAction(), 0, 9) == 'main_menu' ){
+				$this->app_state->setActionInnerByPattern('main_menu');
+			
+				include_once 'controller/entities/main_menu_controller.php';
+				$controller = new MainMenuController($this->app_state);
+				$controller->process();
+			
+				include_once 'view/entities/main_menu_view.php';
+				$mainMenuView = new MainMenuView($this->app_state);
+				$mainMenuView->setAppData( $controller->getEntity() );
+				$mainMenuView->draw();
+			}
+			else if( substr($this->app_state->getAction(), 0, 5) == 'issue' ){
+				$this->app_state->setActionInnerByPattern('issue');
+					
+				include_once 'controller/entities/issue_controller.php';
+				$controller = new IssueController($this->app_state);
+				$controller->process();
+					
+				include_once 'view/entities/issue_view.php';
+				$issueView = new IssueView($this->app_state);
+				$issueView->setAppData( $controller->getEntity() );
+				$issueView->draw();
+			}
+			else if( substr($this->app_state->getAction(), 0, 16) == 'issue_properties' ){
+				$this->app_state->setActionInnerByPattern('issue_properties');
+					
+				include_once 'controller/entities/issue_properties_controller.php';
+				$controller = new IssuePropertiesController($this->app_state);
+				$controller->process();
+					
+				include_once 'view/entities/issue_properties_view.php';
+				$issueView = new IssuePropertiesView($this->app_state);
+				$issueView->setAppData( $controller->getEntity() );
+				$issueView->draw();
+			}
+		}else {
+			include_once 'modules/web_studio/controller/main_controller.php';
+			$_controller = new WebStudioController();
+			$_controller->init($this->app_state);
+			$_controller->process();
+		}
 	}
 	
 	private function controllerProcess_qr_stat() {

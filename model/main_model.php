@@ -101,9 +101,6 @@ class MainModel {
 		$this->app_data->qr_manager_guests->GuestPackNormalizeQr();
 		$this->data_Admin_GuestsList();
 	}
-	
-	
-	
 	// END qr_manager_guests
 	// ______________________________________________________________________________________________________________________
 	
@@ -112,7 +109,6 @@ class MainModel {
 	
 	// ______________________________________________________________________________________________________________________
 	// qr_manager_groups
-	
 	private function init_QR_manager_guests_groups() {
 		include_once 'controller/bd_tables/qr_manager_guests_groups.php';
 		$this->app_data->qr_manager_guests_groups = new QR_manager_guests_groups();
@@ -157,7 +153,6 @@ class MainModel {
 		$this->app_data->qr_manager_guests_groups->dropImgArr($_ids_arr[0], $_ids_arr[1]);
 		$this->app_data->qr_manager_guests_groups->getOneItem($_ids_arr[0]);
 	}
-	
 	// END qr_manager_groups
 	// ______________________________________________________________________________________________________________________
 	
@@ -197,8 +192,6 @@ class MainModel {
 		$this->app_data->qr_manager_guests_reg_types->dropOne($_id);
 		$this->app_data->qr_manager_guests_reg_types->getFullList();
 	}
-	
-	
 	// END qr_manager_guests_reg_types
 	// ______________________________________________________________________________________________________________________
 	
@@ -207,7 +200,6 @@ class MainModel {
 	
 	// ______________________________________________________________________________________________________________________
 	// Statistics
-	
 	private function init_QR_manager_events_statistics() {
 		if(!$this->if_qr_manager_events_statistics_init){
 			include_once 'controller/entity_tables/qr_manager_events_statistics.php';
@@ -230,7 +222,6 @@ class MainModel {
 		$this->init_QR_manager_events_statistics();
 		$this->app_data->qr_manager_events_statistics->getGueststListByDate($_id);
 	}
-	
 	// END Statistics
 	// ______________________________________________________________________________________________________________________
 	

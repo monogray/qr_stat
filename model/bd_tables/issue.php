@@ -3,6 +3,8 @@ include_once 'table_entity.php';
 class Issue extends Table_Entity{
 	public $table_name = 'issue';
 	
+	static public $instance = null;
+	
 	public $id_order;
 	public $id;
 	public $name;
@@ -27,7 +29,12 @@ class Issue extends Table_Entity{
 	public $properties;
 	public $date;
 	
+	public $img_arr_array;				// Array of Images pathes. Array[][]
+	
 	public $menu_entity;
+	public $menu_cur_entity;			// MainMenu entity of curent issues parent (if parrent is MainMenu)
+	
+	public $issue_cur_entity;			// Issue entity of curent issues parent (if parrent is Issue)
 	
 	public $properties_table;			// Properties of issue
 	public $properties_table_data;		// Properties data of issue
@@ -64,13 +71,25 @@ class Issue extends Table_Entity{
 	function Issue() {
 		parent::Table_Entity();
 	}
+	
+	static public function getInstance(){
+		if(self::$instance == null){
+			self::$instance = new self();
+			self::$instance->getMainList();
+		}
+		return self::$instance;
+	}
+	
+	static public function updateInstance(){
+		self::$instance = null;
+		self::getInstance();
+	}
 
 	protected function setValuesByData($_data) {
 		include_once 'main_menu.php';
-		$this->menu_entity = new MainMenu();
-		$this->menu_entity->getMainList();
+		$this->menu_entity = MainMenu::getInstance();
 		
-		include_once 'issue_properties.php';
+		include_once 'issue_properties.php';			/// !!!!!!!!!!!!!!!!!!!!!!!!!!!
 		$this->properties_table = new IssueProperties();
 		$this->properties_table->getMainList();
 		
@@ -78,12 +97,13 @@ class Issue extends Table_Entity{
 		
 		$this->len = count($_data);
 		for ($i = 0; $i < $this->len; $i++) {
-			$this->id_order[$i]				= $i;
 			$this->id[$i]					= $_data[$i]['id'];
+			$this->id_order[ $this->id[$i] ]	= $i;
+			
 			$this->name[$i]					= $_data[$i]['name'];
-			$this->summary[$i]				= $_data[$i]['summary'];
-			$this->description[$i]			= $_data[$i]['description'];
-			$this->description_2[$i]		= $_data[$i]['description_2'];
+			$this->summary[$i]				= htmlspecialchars_decode($_data[$i]['summary']);
+			$this->description[$i]			= htmlspecialchars_decode($_data[$i]['description']);
+			$this->description_2[$i]		= htmlspecialchars_decode($_data[$i]['description_2']);
 			$this->menu[$i]					= $_data[$i]['menu'];
 			$this->parent_issue_id[$i]		= $_data[$i]['parent_issue_id'];
 			$this->lang[$i]					= $_data[$i]['lang'];
@@ -106,7 +126,55 @@ class Issue extends Table_Entity{
 			
 			$this->properties_table_data[ $this->id[$i] ] = new IssuePropertiesData();
 			$this->properties_table_data[ $this->id[$i] ]->getPropertiesByIssueId($this->id[$i]);
+			
+			if($this->menu[$i] != -1){
+				$this->menu_cur_entity[$i] = new MainMenu();
+				$this->menu_cur_entity[$i]->setValuesByInstanceAndId($this->menu[$i]);
+			}
+			
+			if($this->parent_issue_id[$i] != -1){
+				$this->issue_cur_entity[$i] = new Issue();
+				$this->issue_cur_entity[$i]->setValuesByInstanceAndId($this->parent_issue_id[$i]);
+			}
+			
+			if($this->img_arr[$i] != ''){
+				$this->img_arr_array[$i] = explode(";", $this->img_arr[$i]);
+			}
 		}
+	}
+	
+	public function setValuesByInstanceAndId($_id) {
+		$_instance = self::getInstance();
+		if(isset( $_instance->id_order[$_id] )){
+			$__id = $_instance->id_order[$_id];
+		}else{
+			$__id = 0;
+		}
+		
+		$this->id[0]				= $_instance->id[$__id];
+		$this->name[0]				= $_instance->name[$__id];
+		$this->summary[0]			= $_instance->summary[$__id];
+		$this->description[0]		= $_instance->description[$__id];
+		$this->description_2[0]		= $_instance->description_2[$__id];
+		$this->menu[0]				= $_instance->menu[$__id];
+		$this->parent_issue_id[0]	= $_instance->parent_issue_id[$__id];
+		$this->lang[0]				= $_instance->lang[$__id];
+		$this->img_1[0]				= $_instance->img_1[$__id];
+		$this->img_2[0]				= $_instance->img_2[$__id];
+		$this->img_3[0]				= $_instance->img_3[$__id];
+		$this->img_arr[0]			= $_instance->img_arr[$__id];
+		$this->file_arr[0]			= $_instance->file_arr[$__id];
+		$this->order_by[0]			= $_instance->order_by[$__id];
+		$this->css_class[0]			= $_instance->css_class[$__id];
+		$this->css_id[0]			= $_instance->css_id[$__id];
+		$this->tags[0]				= $_instance->tags[$__id];
+		$this->php_file[0]			= $_instance->php_file[$__id];
+		$this->css_file[0]			= $_instance->css_file[$__id];
+		$this->is_visible[0]		= $_instance->is_visible[$__id];
+		$this->properties[0]		= $_instance->properties[$__id];
+		$this->date[0]				= $_instance->date[$__id];
+	
+		$this->len = 1;
 	}
 	
 	// Properties processing
@@ -143,24 +211,53 @@ class Issue extends Table_Entity{
 	}
 	
 	public function updateItem($_id) {
-		$_name = $_POST['name'];
-		$_summary = $_POST['summary'];
-		$_description = $_POST['description'];
-		$_description_2 = $_POST['description_2'];
-		$_menu = $_POST['menu'];
+		$_name				= $_POST['name'];
+		$_summary			= htmlspecialchars($_POST['summary']);
+		$_description		= htmlspecialchars($_POST['description']);
+		$_description_2		= htmlspecialchars($_POST['description_2']);
+		$_menu				= $_POST['menu'];
+		$_parent_issue_id	= $_POST['parent_issue_id'];
 		
 		$q = 'UPDATE '.$this->table_name.' SET
 			name			= "'.$_name.'",
 			summary			= "'.$_summary.'",
 			description		= "'.$_description.'",
 			description_2	= "'.$_description_2.'",
-			menu			= "'.$_menu.'"
+			menu			= "'.$_menu.'",
+			parent_issue_id	= "'.$_parent_issue_id.'"
 			WHERE id = '.$_id.' LIMIT 1;';
 		
 		$this->run_query($q);
+		
+		// Attachments
+		if(isset($_FILES['img_arr']) && count($_FILES['img_arr']['name']) > 0) {
+			// Files and images processing
+			include_once 'layouts/forms_processing.php';
+			$formsProcessing = new FormsProcessing();
+		
+			$_files_list = $formsProcessing->FilesProcessing(Settings::$path_to_attachments_dir.'issue/'.$_id.'/', 'img_arr', '', 50);
+			
+			// Get current filles
+			$_file_arr_str = $this->getFilesListByIssueId($_id);
+			// Concatenate old files and new one
+			if($_file_arr_str == '')
+				$_file_arr_fin = $_files_list;
+			else
+				$_file_arr_fin = $_file_arr_str.';'.$_files_list;
+			
+			$q = 'UPDATE '.$this->table_name.' SET
+				img_arr			= "'.$_file_arr_fin.'"
+				WHERE id = '.$_id.' LIMIT 1;';
+			$this->run_query($q);
+		}
 
 		$this->propertiesUpdate($_id);		
 		$this->setInfoMessage('Issue successfully updated');
+	}
+	
+	public function getFilesListByIssueId($_id) {
+		$_issue = self::getInstance();
+		return $_issue->img_arr[ $_issue->id_order[ $_id ] ];
 	}
 	
 	/**

@@ -16,6 +16,12 @@ class CoreController {
 		$this->app_state = $_app_state;
 	}
 	
+	public function controllerArrayProcess($_controller_array){
+		foreach ($_controller_array as $key => $value)
+			if($this->getAppState()->getAction() == $key)
+			$this->$value();
+	}
+	
 	public function process() {
 		if($this->app_state->getActionInner() == $this->entity_name){
 			$this->processIndex();

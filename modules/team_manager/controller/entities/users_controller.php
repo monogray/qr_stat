@@ -18,12 +18,6 @@ class UsersController extends CoreController {
 		$this->controllerArrayProcess($_controller);
 	}
 	
-	public function controllerArrayProcess($_controller_array){
-		foreach ($_controller_array as $key => $value)
-			if($this->getAppState()->getAction() == $key)
-				$this->$value();
-	}
-	
 	protected function processLogin() {
 	}
 	
@@ -32,7 +26,6 @@ class UsersController extends CoreController {
 	}
 	
 	protected function processUsersEdit() {
-		//$this->entity->getProjectById($this->app_state->getId());
-		$this->entity->getUsersList(); // ÇÀÌÅÍÈÒÜ! ýòî çàãëóøêà
+		$this->entity->getUsersById($this->getAppState()->getId());
 	}
 }

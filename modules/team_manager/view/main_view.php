@@ -191,7 +191,8 @@ class WebStudioMainView extends View_Core{
 			$_class = 'tracker_inner_container_50';
 		}
 		
-		$this->layout->Draw_DivStart($_class, '');
+		Entity::inst()->init('div', 'class', $_class)
+			->addAttr('name', $_filter_number)->drawHeader();
 		
 		$this->layout->Draw_DivStart('tracker_caption', '');
 			echo 'Trackers area '.$_filter_number;
@@ -377,6 +378,27 @@ class WebStudioMainView extends View_Core{
 			$this->layout->Draw_DivEnd('div_left_30');
 		$this->layout->Draw_DivEnd('tracker_inner_area');
 		
+		// Dates
+		echo'<script>
+			$(function() {
+				$( "#start_date" ).datepicker({
+					showButtonPanel: true
+				});
+				$( "#execute_to" ).datepicker({
+					showButtonPanel: true
+				});
+				$( "#start_date" ).datepicker( "option", "dateFormat", "yy-mm-dd" );
+				$( "#execute_to" ).datepicker( "option", "dateFormat", "yy-mm-dd" );
+				
+				$( "#start_date" ).datepicker("setDate", "'.substr($_issue->start_date[0], 0, 9).'");
+				$( "#execute_to" ).datepicker("setDate", "'.substr($_issue->execute_to[0], 0, 9).'");
+			});
+		</script>';
+		Entity::inst()->init('div', 'class', 'tracker_inner_area')->drawHeader();
+			$this->form->inputText('Start Date ', 30, '', 'start_date', 'start_date');
+			$this->form->inputText('Execute To ', 30, '', 'execute_to', 'execute_to');
+		Entity::inst()->drawFooter_st('div', 'tracker_inner_area');
+		
 		// Attachments
 		$this->layout->Draw_H2('Attachments ('.$_attach->len.')');
 		$this->layout->Draw_DivStart('tracker_inner_area', '');
@@ -430,7 +452,6 @@ class WebStudioMainView extends View_Core{
 			$(".attach_drop_confirm_bt").click(function() {
 				window.location = "?chapter=index&action=delete_attach&id=" + '.$_issue->id[0].' + "&attach_id=" + $(this).attr("value");
 			});
-		
 		</script>';
 		
 		$this->layout->Draw_DivEnd('tracker_container');
@@ -729,7 +750,7 @@ class WebStudioMainView extends View_Core{
 		$this->layout->Draw_DivStart('tracker_container', '');
 		$this->layout->Draw_H1('Users');
 	
-		Entity::getInstance()->init('a', 'class', 'add_task_link')
+		Entity::inst()->init('a', 'class', 'add_task_link')
 			->addAttr('href', $this->setUrl('users', 'add'))
 			->setContent('Add user <img src="modules/team_manager/public/img/add_ico.png" width="20px"/>')
 			->draw();
@@ -763,16 +784,16 @@ class WebStudioMainView extends View_Core{
 	
 		Div::getNew()->init('class', 'tracker_container')->drawHeader();
 		
-		Entity::getInstance()->init('a', 'class', 'back_link')
+		Entity::inst()->init('a', 'class', 'back_link')
 			->addAttr('href', $this->setUrl('users'))
 			->setContent('&larr; back to users')
 			->draw();
 		
-		Entity::getInstance()->init('h1')->setContent($_user->name[0])->draw();
+		Entity::inst()->init('h1')->setContent($_user->name[0])->draw();
 
-		Entity::getInstance()->init('div', 'class', 'tracker_inner_area')
+		Entity::inst()->init('div', 'class', 'tracker_inner_area')
 			->drawHeader();
-		Entity::getInstance()->init('div', '', '')
+		Entity::inst()->init('div', '', '')
 			->setContent('Login: '.$_user->login[0])
 			->draw()
 			->setContent('e-mail: '.$_user->mail[0])
@@ -783,18 +804,25 @@ class WebStudioMainView extends View_Core{
 			->draw()
 			->setContent('Phone: '.$_user->phone[0])
 			->draw();
-		Div::drawFooter_st('tracker_inner_area');
+		Entity::drawFooter_st('div', 'tracker_inner_area');
 		
-		Entity::getInstance()->init('div', 'class', 'tracker_inner_area')
-		->setContent(
-			Entity::getNew()->init('div', '', '')
-			->setContent('Personal Data:')
-		)
-		->addContent(
-			Entity::getNew()->init('div', '', '')
-			->setContent($_user->personal_data[0])
-		)
-		->draw();
+		Entity::inst()->init('div', 'class', 'tracker_inner_area')
+			->setContent(
+				Entity::getNew()->init('div', '', '')
+				->setContent('Personal Data:')
+			)
+			->addContent(
+				Entity::getNew()->init('div', '', '')
+				->setContent($_user->personal_data[0])
+			)
+			->draw();
+			
+		Entity::inst()->init('div', 'class', 'tracker_inner_area')
+			->setContent(
+				Entity::getNew()->init('div', '', '')
+				->setContent('Date: '.date("d.m.Y H:i (l)", strtotime( $_user->date[0] ) ))
+			)
+			->draw();
 		
 		Div::drawFooter_st('tracker_container');
 	}

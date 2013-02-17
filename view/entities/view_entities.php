@@ -16,6 +16,23 @@ class ViewEntities extends ViewEntitiesCore{
 		
 		require_once 'layouts/mono_layouts.php';
 		$this->default_layouts = new MonoLayouts();
+		
+		include_once 'layouts/html_entity/entity.php';
+		include_once 'layouts/html_entity/div.php';
+	}
+	
+	// Owerride
+	protected function drawInHeader() {
+		echo'<!-- TinyMCE -->
+			<script type="text/javascript" src="public/js/tiny_mce/tiny_mce.js"></script>
+			<script type="text/javascript" src="public/js/adminka/tiny_mce_processing.js"></script>
+			<script type="text/javascript">
+				initTinyMCE();
+			</script>
+	
+			<!-- jQuery UI -->
+			<script src="http://code.jquery.com/ui/1.9.2/jquery-ui.js" type="text/javascript" charset="utf-8"></script>
+			<link rel="stylesheet" href="http://code.jquery.com/ui/1.9.2/themes/base/jquery-ui.css" type="text/css" media="screen" charset="utf-8">';
 	}
 	
 	public function draw() {
