@@ -69,22 +69,22 @@ class ViewEntities extends ViewEntitiesCore{
 	}
 	
 	public function process() {
-		if($this->app_state->getActionInner() == $this->entity_name){
+		if( $this->actionInnerMathWith($this->entity_name) ){
 			$this->processIndex();
 		}
-		else if($this->app_state->getActionInner() == $this->entity_actions['list']){
+		else if( $this->actionInnerMathWith($this->entity_actions['list']) ){
 			$this->processList();
 		}
-		else if($this->app_state->getActionInner() == $this->entity_actions['view']){
+		else if( $this->actionInnerMathWith($this->entity_actions['view']) ){
 			$this->processView();
 		}
-		else if($this->app_state->getActionInner() == $this->entity_actions['create']){
+		else if( $this->actionInnerMathWith($this->entity_actions['create']) ){
 			$this->processList();
 		}
-		else if($this->app_state->getActionInner() == $this->entity_actions['drop']){
+		else if( $this->actionInnerMathWith($this->entity_actions['drop']) ){
 			$this->processList();
 		}
-		else if($this->app_state->getActionInner() == $this->entity_actions['update']){
+		else if( $this->actionInnerMathWith($this->entity_actions['update']) ){
 			$this->processView();
 		}
 	}

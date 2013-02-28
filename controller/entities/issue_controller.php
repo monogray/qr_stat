@@ -13,7 +13,9 @@ class IssueController extends CoreController {
 											'list_by_menu'		=> 'list_by_menu',
 											'create_by_menu'	=> 'create_by_menu',
 											'create_by_issue'	=> 'create_by_issue',
-											'list_by_issue'		=> 'list_by_issue');
+											'list_by_issue'		=> 'list_by_issue',
+											'drop_img_arr'		=> 'drop_img_arr',
+											'drop_img_arr_2'	=> 'drop_img_arr_2');
 	
 	function IssueController($_app_state) {
 		parent::CoreController($_app_state);
@@ -32,6 +34,10 @@ class IssueController extends CoreController {
 			$this->processCreateByIssue();
 		}else if($this->app_state->getActionInner() == $this->entity_actions['list_by_issue']){
 			$this->processListByIssue();
+		}else if($this->app_state->getActionInner() == $this->entity_actions['drop_img_arr']){
+			$this->processDropImgArr();
+		}else if($this->app_state->getActionInner() == $this->entity_actions['drop_img_arr_2']){
+			$this->processDropImgArr_2();
 		}
 	}
 	
@@ -51,5 +57,15 @@ class IssueController extends CoreController {
 	
 	protected function processListByIssue() {
 		$this->entity->getListByParentIssueId($this->app_state->getId());
+	}
+	
+	protected function processDropImgArr() {
+		$this->entity->dropImgArr($this->app_state->getId(), $this->app_state->getSubId(), 'img_arr');
+		$this->processView();
+	}
+	
+	protected function processDropImgArr_2() {
+		$this->entity->dropImgArr($this->app_state->getId(), $this->app_state->getSubId(), 'img_arr_2');
+		$this->processView();
 	}
 }

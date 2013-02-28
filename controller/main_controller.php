@@ -61,6 +61,18 @@ class MainController {
 				$mainMenuView->setAppData( $controller->getEntity() );
 				$mainMenuView->draw();
 			}
+			else if( substr($this->app_state->getAction(), 0, 16) == 'issue_properties' ){
+				$this->app_state->setActionInnerByPattern('issue_properties');
+				
+				include_once 'controller/entities/issue_properties_controller.php';
+				$controller = new IssuePropertiesController($this->app_state);
+				$controller->process();
+					
+				include_once 'view/entities/issue_properties_view.php';
+				$issueView = new IssuePropertiesView($this->app_state);
+				$issueView->setAppData( $controller->getEntity() );
+				$issueView->draw();
+			}
 			else if( substr($this->app_state->getAction(), 0, 5) == 'issue' ){
 				$this->app_state->setActionInnerByPattern('issue');
 					
@@ -73,20 +85,24 @@ class MainController {
 				$issueView->setAppData( $controller->getEntity() );
 				$issueView->draw();
 			}
-			else if( substr($this->app_state->getAction(), 0, 16) == 'issue_properties' ){
-				$this->app_state->setActionInnerByPattern('issue_properties');
+			
+			// Saas
+			else if( substr($this->app_state->getAction(), 0, 7) == 'content' ){
+				$this->app_state->setActionInnerByPattern('content');
 					
-				include_once 'controller/entities/issue_properties_controller.php';
-				$controller = new IssuePropertiesController($this->app_state);
+				include_once 'controller/entities/content_controller.php';
+				$controller = new ÑontentController($this->app_state);
 				$controller->process();
 					
-				include_once 'view/entities/issue_properties_view.php';
-				$issueView = new IssuePropertiesView($this->app_state);
+				include_once 'view/entities/content_view.php';
+				$issueView = new IssueView($this->app_state);
 				$issueView->setAppData( $controller->getEntity() );
 				$issueView->draw();
 			}
+			
 		}else {
-			include_once 'modules/web_studio/controller/main_controller.php';
+			//include_once 'modules/web_studio/controller/main_controller.php';
+			include_once Settings::$path_to_current_module.'controller/main_controller.php';
 			$_controller = new WebStudioController();
 			$_controller->init($this->app_state);
 			$_controller->process();

@@ -13,7 +13,7 @@ class View_Core {
 		$this->setDBConnect($_db_connect);
 	}
 	
-	public function setTemplate($_template='default') {
+	protected function setTemplate($_template='default') {
 		if($_template == 'default'){
 			include_once 'view/templates/view_template_default.php';
 			$this->template = new DefaultTemplate();
@@ -42,16 +42,16 @@ class View_Core {
 			<body>';
 	}
 	
-	public function drawInHeader() {
+	protected function drawInHeader() {
 	}
 	
-	public function drawTop() {
+	protected function drawTop() {
 	}
 	
-	public function drawFooter() {
+	protected function drawFooter() {
 	}
 	
-	public function drawEnd() {
+	protected function drawEnd() {
 		echo '</body>
 		</html>';
 	}
@@ -67,7 +67,7 @@ class View_Core {
 		$this->form = new FormsLayout();
 	}
 	
-	function initLayout() {
+	protected function initLayout() {
 		include_once 'layouts/mono_layouts.php';
 		$this->layout = new MonoLayouts();
 		
@@ -76,40 +76,40 @@ class View_Core {
 	}
 	
 	// HELPERS
-	function setUrl($_chapter, $_action='', $_id='', $_sub_id='') {
+	public function setUrl($_chapter, $_action='', $_id='', $_sub_id='') {
 		if($_action == '')
-			return 'index.php?chapter='.$_chapter;
+			return '?chapter='.$_chapter;
 		else if($_id == '')
-			return 'index.php?chapter='.$_chapter.'&amp;action='.$_action;
+			return '?chapter='.$_chapter.'&amp;action='.$_action;
 		else if($_sub_id == '')
-			return 'index.php?chapter='.$_chapter.'&amp;action='.$_action.'&amp;id='.$_id;
+			return '?chapter='.$_chapter.'&amp;action='.$_action.'&amp;id='.$_id;
 		else
-			return 'index.php?chapter='.$_chapter.'&amp;action='.$_action.'&amp;id='.$_id.'&amp;sub_id='.$_sub_id;
+			return '?chapter='.$_chapter.'&amp;action='.$_action.'&amp;id='.$_id.'&amp;sub_id='.$_sub_id;
 	}
 	
 	// Setters
-	function setDBConnect($_db_connect) {
+	public function setDBConnect($_db_connect) {
 		$this->db_connect = $_db_connect;
 	}
 	
-	function setAppData($_app_data) {
+	public function setAppData($_app_data) {
 		$this->app_data = $_app_data;
 	}
 	
-	function setAppState($_app_state) {
+	public function setAppState($_app_state) {
 		$this->app_state = $_app_state;
 	}
 
 	// Getters
-	function getDBConnect() {
+	public function getDBConnect() {
 		return $this->db_connect;
 	}
 	
-	function getAppData() {
+	public function getAppData() {
 		return $this->app_data;
 	}
 	
-	function getAppState() {
+	public function getAppState() {
 		return $this->app_state;
 	}
 }

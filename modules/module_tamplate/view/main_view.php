@@ -1,41 +1,29 @@
 <?php
 include_once 'view/view_core.php';
 class WebStudioMainView extends View_Core{
-	private $layout;
-	private $form;
 
 	function WebStudioMainView($_db_connect) {
 		$this->setDBConnect($_db_connect);
 		
-		include_once 'modules/web_studio/view/templates/view_template_default.php';
+		include_once Settings::$path_to_current_module.'view/templates/view_template_default.php';
 		$template = new WebStudioDefaultTemplate();
 		$this->setTemplate($template);
 		
-		include_once 'layouts/mono_layouts.php';
-		$this->layout = new MonoLayouts();
-	}
-	
-	protected function initFormsLayouts() {
-		require_once 'layouts/form_layouts.php';
-		$this->form = new FormsLayout();
+		$this->initLayout();
+		$this->initFormsLayouts();
 	}
 	
 	public function draw() {
 		$this->drawHeader();
-			$this->drawTop();
-			
-			$this->process();
-			
-			$this->drawFooter();
+		$this->drawTop();
+		
+		$this->process();
+		
+		$this->drawFooter();
 		$this->drawEnd();
 	}
 	
 	public function process() {
-		/*if( Settings::isUserLogined() ){
-			$this->drawMain();
-		}else{
-			$this->processLogin();
-		}*/
 		$this->drawMain();
 	}
 	
@@ -68,4 +56,3 @@ class WebStudioMainView extends View_Core{
 		}
 	}
 }
-?>

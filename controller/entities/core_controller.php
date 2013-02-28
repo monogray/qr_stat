@@ -1,11 +1,13 @@
 <?php 
 class CoreController {
+	// package 'controller/app_state.php'
 	protected $app_state;
 	
 	protected $entity;
-	
 	protected $entity_name			= '';
 	protected $entity_class_path	= '';
+	
+	// Default actions
 	protected $entity_actions		= Array('list'			=> 'list',
 											'view'			=> 'view',
 											'create'		=> 'create',
@@ -16,10 +18,16 @@ class CoreController {
 		$this->app_state = $_app_state;
 	}
 	
-	public function controllerArrayProcess($_controller_array){
+	protected function controllerArrayProcess($_controller_array){
 		foreach ($_controller_array as $key => $value)
 			if($this->getAppState()->getAction() == $key)
-			$this->$value();
+				$this->$value();
+	}
+	
+	protected function controllerArrayProcessForInnerAction($_controller_array){
+		foreach ($_controller_array as $key => $value)
+			if($this->getActionInner() == $key)
+				$this->$value();
 	}
 	
 	public function process() {
@@ -71,6 +79,24 @@ class CoreController {
 	}
 	
 	// ----------------------------------------------------------------------------
+	// HELPERS
+	
+	/**
+	 *
+	 * Matching '$this->getAppState()->getActionInner()' and '$_entity_actions'
+	 *
+	 * @param String $_entity_actions
+	 * @return boolean
+	 */
+	protected function actionInnerMathWith($_entity_actions) {
+		if($this->getAppState()->getActionInner() == $_entity_actions)
+			return true;
+		else
+			return false;
+	}
+	
+	
+	// ----------------------------------------------------------------------------
 	// SETTERS
 	public function setEntity($_entity) {
 		$this->entity = $_entity;
@@ -85,5 +111,12 @@ class CoreController {
 	
 	public function getAppState() {
 		return $this->app_state;
+	}
+	
+	/**
+	 * Get ActionInner from app_state variable ( $this->getAppState()->getActionInner() )
+	 */
+	public function getActionInner() {
+		return $this->getAppState()->getActionInner();
 	}
 }

@@ -1,11 +1,13 @@
 <?php 
+/**
+ * Url parsing and save all url data
+ */
 class AppState {
 	public $chapter;
 	public $action;
 	public $action_inner;
 	public $id;
 	public $sub_id;
-	
 	// User Data
 	//public $user_logined = false;
 
@@ -28,7 +30,6 @@ class AppState {
 		$this->setAction( $this->getActionFromGET() );
 		$this->setId( $this->getIdFromGET() );
 		$this->setSubId( $this->getSubIdFromGET() );
-		//$this->setActionInner( $this->getActionInnerByPattern('events') );
 	}
 	
 	private function getChapterFromGET() {
@@ -128,4 +129,3 @@ class AppState {
 		return $this->sub_id;
 	}
 }
-?>

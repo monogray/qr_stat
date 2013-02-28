@@ -18,6 +18,7 @@ class Issue extends Table_Entity{
 	public $img_2;
 	public $img_3;
 	public $img_arr;
+	public $img_arr_2;
 	public $file_arr;
 	public $order_by;
 	public $css_class;
@@ -26,10 +27,12 @@ class Issue extends Table_Entity{
 	public $php_file;
 	public $css_file;
 	public $is_visible;
+	public $type;
 	public $properties;
 	public $date;
 	
-	public $img_arr_array;				// Array of Images pathes. Array[][]
+	public $img_arr_array	= Array();	// Array of Images pathes. Array[][]
+	public $img_arr_array_2	= Array();	// Array of Images pathes. Array[][]
 	
 	public $menu_entity;
 	public $menu_cur_entity;			// MainMenu entity of curent issues parent (if parrent is MainMenu)
@@ -41,7 +44,7 @@ class Issue extends Table_Entity{
 
 	public $name_by_id;
 	
-	public $entity_sheme_names	= Array('id',			'name',				'summary',		'description',	'description_2',
+	/*public $entity_sheme_names	= Array('id',			'name',				'summary',		'description',	'description_2',
 										'menu',			'parent_issue_id',	'lang',			'img_1',		'img_2',			'img_3',
 										'img_arr',		'file_arr',			'order_by',		'css_class',	'css_id',
 										'tags',			'php_file',			'css_file',		'is_visible',	'properties',
@@ -64,7 +67,7 @@ class Issue extends Table_Entity{
 										'img_arr',			'file_arr',		'order_by',				'css_class',		'css_id',
 										'tags',				'php_file',		'css_file',				'is_visible',		'properties',
 										'date');
-	
+	*/
 	public $entity_depending	= Array('menu'	=> 'menu_entity');
 	public $entity_properties_table	= 'issue_properties';		// Need to define this variable for display properties chapter on view page
 	
@@ -111,6 +114,7 @@ class Issue extends Table_Entity{
 			$this->img_2[$i]				= $_data[$i]['img_2'];
 			$this->img_3[$i]				= $_data[$i]['img_3'];
 			$this->img_arr[$i]				= $_data[$i]['img_arr'];
+			$this->img_arr_2[$i]			= $_data[$i]['img_arr_2'];
 			$this->file_arr[$i]				= $_data[$i]['file_arr'];
 			$this->order_by[$i]				= $_data[$i]['order_by'];
 			$this->css_class[$i]			= $_data[$i]['css_class'];
@@ -119,6 +123,7 @@ class Issue extends Table_Entity{
 			$this->php_file[$i]				= $_data[$i]['php_file'];
 			$this->css_file[$i]				= $_data[$i]['css_file'];
 			$this->is_visible[$i]			= $_data[$i]['is_visible'];
+			$this->type[$i]					= $_data[$i]['type'];
 			$this->properties[$i]			= $_data[$i]['properties'];
 			$this->date[$i]					= $_data[$i]['date'];
 
@@ -139,6 +144,13 @@ class Issue extends Table_Entity{
 			
 			if($this->img_arr[$i] != ''){
 				$this->img_arr_array[$i] = explode(";", $this->img_arr[$i]);
+			}else{
+				$this->img_arr_array[$i] = Array();
+			}
+			if($this->img_arr_2[$i] != ''){
+				$this->img_arr_array_2[$i] = explode(";", $this->img_arr_2[$i]);
+			}else{
+				$this->img_arr_array_2[$i] = Array();
 			}
 		}
 	}
@@ -163,6 +175,7 @@ class Issue extends Table_Entity{
 		$this->img_2[0]				= $_instance->img_2[$__id];
 		$this->img_3[0]				= $_instance->img_3[$__id];
 		$this->img_arr[0]			= $_instance->img_arr[$__id];
+		$this->img_arr_2[0]			= $_instance->img_arr_2[$__id];
 		$this->file_arr[0]			= $_instance->file_arr[$__id];
 		$this->order_by[0]			= $_instance->order_by[$__id];
 		$this->css_class[0]			= $_instance->css_class[$__id];
@@ -171,6 +184,7 @@ class Issue extends Table_Entity{
 		$this->php_file[0]			= $_instance->php_file[$__id];
 		$this->css_file[0]			= $_instance->css_file[$__id];
 		$this->is_visible[0]		= $_instance->is_visible[$__id];
+		$this->type[0]				= $_instance->type[$__id];
 		$this->properties[0]		= $_instance->properties[$__id];
 		$this->date[0]				= $_instance->date[$__id];
 	
@@ -184,11 +198,26 @@ class Issue extends Table_Entity{
 		else
 			return '';
 	}
+	
+	public function getPropertyValueByPropertieFieldsName($_issue_id, $_fields_name) {
+		$_id = 0;
+		for ($i = 0; $i < $this->properties_table->len; $i++) {
+			if($this->properties_table->field_name[$i] == $_fields_name)
+				$_id = $this->properties_table->id[$i];
+		}
+		
+		if(isset($this->properties_table_data[$_issue_id]->data_value_by_property_id[$_id]))
+			return $this->properties_table_data[$_issue_id]->data_value_by_property_id[$_id];
+		else
+			return '';
+	}
 	// END Properties processing
 	
 	public function getMainList() {
 		$this->dat = $this->select_All_default();
 		$this->setValuesByData($this->dat);
+		//$this->dat = $this->query_to_dat("SELECT * FROM $this->table_name ORDER BY date ASC;");
+		//$this->setValuesByData($this->dat);
 	}
 	
 	public function getOneItem($_id) {
@@ -230,34 +259,93 @@ class Issue extends Table_Entity{
 		$this->run_query($q);
 		
 		// Attachments
-		if(isset($_FILES['img_arr']) && count($_FILES['img_arr']['name']) > 0) {
-			// Files and images processing
-			include_once 'layouts/forms_processing.php';
-			$formsProcessing = new FormsProcessing();
-		
-			$_files_list = $formsProcessing->FilesProcessing(Settings::$path_to_attachments_dir.'issue/'.$_id.'/', 'img_arr', '', 50);
-			
-			// Get current filles
-			$_file_arr_str = $this->getFilesListByIssueId($_id);
-			// Concatenate old files and new one
-			if($_file_arr_str == '')
-				$_file_arr_fin = $_files_list;
-			else
-				$_file_arr_fin = $_file_arr_str.';'.$_files_list;
-			
-			$q = 'UPDATE '.$this->table_name.' SET
-				img_arr			= "'.$_file_arr_fin.'"
-				WHERE id = '.$_id.' LIMIT 1;';
-			$this->run_query($q);
-		}
+		$this->updateAttachments($_id, 'img_arr');
+		$this->updateAttachments($_id, 'img_arr_2');
 
 		$this->propertiesUpdate($_id);		
 		$this->setInfoMessage('Issue successfully updated');
 	}
 	
-	public function getFilesListByIssueId($_id) {
+	// Saas
+	public function updateItem_portfolio($_id) {
+		$_name				= $_POST['name'];
+		$_summary			= htmlspecialchars($_POST['summary']);
+		$q = 'UPDATE '.$this->table_name.' SET
+			name			= "'.$_name.'",
+			summary			= "'.$_summary.'"
+			WHERE id = '.$_id.' LIMIT 1;';
+		
+		$this->run_query($q);
+		
+		// Attachments
+		$this->updateAttachments($_id, 'img_arr');
+	}
+	
+	public function updateItem_text_block($_id) {
+		$_name				= $_POST['name'];
+		$_summary			= htmlspecialchars($_POST['summary']);
+		$q = 'UPDATE '.$this->table_name.' SET
+			name			= "'.$_name.'",
+			summary			= "'.$_summary.'"
+			WHERE id = '.$_id.' LIMIT 1;';
+	
+		$this->run_query($q);
+	
+		// Attachments
+		$this->updateAttachments($_id, 'img_arr');
+	}
+	
+	public function createNewByChapterIdAndType($_main_menu_id, $_type) {
+		$q ='INSERT INTO '.$this->table_name.'
+				(id, name, lang, menu, type, date) VALUES(
+					0,
+					"New issue",
+					1,
+					'.$_main_menu_id.',
+					'.$_type.',
+					"'.date("Y-m-d H:i:s").'"
+				)';
+		$this->run_query($q);
+	
+		$this->setInfoMessage('Issue successfully created');
+		return mysql_insert_id();
+	}
+	
+	public function updateAttachments($_issue_id, $_name) {
+		if(isset($_FILES[$_name]) && count($_FILES[$_name]['name']) > 0 && $_FILES[$_name]['name'][0] != '') {
+			$_path = '';
+			if($_name == 'img_arr')
+				$_path = Settings::$path_to_attachments_dir.'issue/'.$_issue_id.'/';
+			else if($_name == 'img_arr_2')
+				$_path = Settings::$path_to_attachments_dir.'issue/'.$_issue_id.'/img_arr_2/';
+
+			// Files and images processing
+			include_once 'layouts/forms_processing.php';
+			$formsProcessing = new FormsProcessing();
+		
+			$_files_list = $formsProcessing->FilesProcessing($_path, $_name, '', 20);
+				
+			// Get current filles
+			$_file_arr_str = $this->getFilesListByIssueId($_issue_id, $_name);
+			// Concatenate old files and new one
+			if($_file_arr_str == '')
+				$_file_arr_fin = $_files_list;
+			else
+				$_file_arr_fin = $_file_arr_str.';'.$_files_list;
+				
+			$q = 'UPDATE '.$this->table_name.' SET
+				'.$_name.'	= "'.$_file_arr_fin.'"
+				WHERE id = '.$_issue_id.' LIMIT 1;';
+			$this->run_query($q);
+		}
+	}
+	
+	public function getFilesListByIssueId($_id, $_file_arr_name) {
 		$_issue = self::getInstance();
-		return $_issue->img_arr[ $_issue->id_order[ $_id ] ];
+		if($_file_arr_name == 'img_arr')
+			return $_issue->img_arr[ $_issue->id_order[ $_id ] ];
+		else if($_file_arr_name == 'img_arr_2')
+			return $_issue->img_arr_2[ $_issue->id_order[ $_id ] ];
 	}
 	
 	/**
@@ -287,8 +375,34 @@ class Issue extends Table_Entity{
 		$this->setInfoMessage('Issue successfully dropped');
 	}
 	
+	public function dropImgArr($_id, $_img_arr_id, $_img_arr_name) {
+		$_issue = new Issue();
+		$_issue->getOneItem($_id);
+		
+		$_path = '';
+		$_file_arr = Array();
+		if($_img_arr_name == 'img_arr'){
+			$_file_arr = $_issue->img_arr_array[0];
+			$_path = Settings::$path_to_attachments_dir.'issue/'.$_id.'/'.$_file_arr[$_img_arr_id];
+		}else if($_img_arr_name == 'img_arr_2'){
+			$_file_arr = $_issue->img_arr_array_2[0];
+			$_path = Settings::$path_to_attachments_dir.'issue/'.$_id.'/img_arr_2/'.$_file_arr[$_img_arr_id];
+		}
+		
+		unlink($_path);
+		
+		unset($_file_arr[$_img_arr_id]);
+		
+		$_img_arr_fin = implode(";", $_file_arr);
+		
+		$q = 'UPDATE '.$this->table_name.' SET
+				'.$_img_arr_name.'	= "'.$_img_arr_fin.'"
+				WHERE id = '.$_id.' LIMIT 1;';
+		$this->run_query($q);
+	}
+	
 	public function getListByChapterId($_main_menu_id) {
-		$q ='SELECT * FROM '.$this->table_name.' WHERE menu = '.$_main_menu_id.';';
+		$q ='SELECT * FROM '.$this->table_name.' WHERE menu = '.$_main_menu_id.' ORDER BY date DESC;';
 		$this->dat = $this->query_to_dat($q);
 		$this->setValuesByData($this->dat);
 	}

@@ -21,11 +21,20 @@ class Settings {
 	//public static $path_to_attachments_dir = './attach/';
 	
 	// Web studio
-	public static $db_table_prefix_name = 'webstudio_';
+	/*public static $db_table_prefix_name = 'webstudio_';
 	public static $path_to_user_class_file = 'model/bd_tables/users.php';
 	public static $path_to_attachments_dir = './modules/web_studio/public/attach/';
+	public static $path_to_current_module = 'modules/web_studio/';				// Debug
+	//public static $path_to_current_module = '../webstudio/modules/web_studio/';		// Prodaction
+	*/
+	// Web service. monoSaaS
+	public static $db_table_prefix_name = 'monosaas_';
+	public static $path_to_user_class_file = 'model/bd_tables/users.php';
+	public static $path_to_attachments_dir = './modules/mono_saas/public/attach/';
+	public static $path_to_current_module = 'modules/mono_saas/';						// Debug
+	//public static $path_to_current_module = '../mono_saas/modules/mono_saas/';		// Prodaction
 	
-	private static $current_user;							// User entity. Contains a instance of current user
+	private static $current_user;							// User entity. Contains an instance of current user
 	
 	public static function isUserLogined() {
 		if(isset(self::$current_user) && self::$current_user->len == 1){

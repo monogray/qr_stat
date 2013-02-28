@@ -77,6 +77,11 @@ class MainView extends View_Core{
 			$this->html_elements->Draw_HyperLink($this->setUrl('admin', 'issue'), 'Issues', 'list_link');
 			$this->html_elements->Draw_HyperLink($this->setUrl('admin', 'issue_properties'), 'Issues properties', 'list_link');
 		$this->html_elements->Draw_DivEnd();
+		
+		$this->html_elements->Draw_DivStart('block_area');
+			$this->html_elements->Draw_H2('Site');
+			$this->html_elements->Draw_HyperLink($this->setUrl('admin', 'content_index'), 'Content edit', 'list_link');
+		$this->html_elements->Draw_DivEnd();
 	}
 	
 	
@@ -595,11 +600,6 @@ class MainView extends View_Core{
 	
 		echo '<table>';
 	}
-	
-	
 	// END Statistics
 	// ______________________________________________________________________________________________________________________
-	
-	
 }
-?>

@@ -1,8 +1,7 @@
 <?php
 class ViewEntitiesCore {
-	//private $db_connect;
 	private $app_data;
-	private $app_states;
+	private $app_state;
 	
 	protected $form;
 	
@@ -60,20 +59,37 @@ class ViewEntitiesCore {
 	// HELPERS
 	public function setUrl($_chapter, $_action='', $_id='', $_sub_id='') {
 		if($_action == '')
-			return 'index.php?chapter='.$_chapter;
+			return '?chapter='.$_chapter;
 		else if($_id == '')
-			return 'index.php?chapter='.$_chapter.'&amp;action='.$_action;
+			return '?chapter='.$_chapter.'&amp;action='.$_action;
 		else if($_sub_id == '')
-			return 'index.php?chapter='.$_chapter.'&amp;action='.$_action.'&amp;id='.$_id;
+			return '?chapter='.$_chapter.'&amp;action='.$_action.'&amp;id='.$_id;
 		else
-			return 'index.php?chapter='.$_chapter.'&amp;action='.$_action.'&amp;id='.$_id.'&amp;sub_id='.$_sub_id;
+			return '?chapter='.$_chapter.'&amp;action='.$_action.'&amp;id='.$_id.'&amp;sub_id='.$_sub_id;
 	}
 	
-	// SETTERS
-	//public function setDBConnect($_db_connect) {
-		//$this->db_connect = $_db_connect;
-	//}
+	/**
+	 * 
+	 * Matching '$this->getAppState()->getActionInner()' and '$_entity_actions'
+	 * 
+	 * @param String $_entity_actions
+	 * @return boolean
+	 */
+	protected function actionInnerMathWith($_entity_actions) {
+		if($this->getAppState()->getActionInner() == $_entity_actions)
+			return true;
+		else
+			return false;
+	}
 	
+	protected function controllerArrayProcessForInnerAction($_controller_array){
+		foreach ($_controller_array as $key => $value)
+			if($this->getActionInner() == $key)
+				$this->$value();
+	}
+	
+
+	// SETTERS
 	public function setAppData($_app_data) {
 		$this->app_data = $_app_data;
 	}
@@ -82,17 +98,21 @@ class ViewEntitiesCore {
 		$this->app_state = $_app_state;
 	}
 
-	// GETTERS
-	//public function getDBConnect() {
-		//return $this->db_connect;
-	//}
 	
+	// GETTERS
 	public function getAppData() {
 		return $this->app_data;
 	}
 	
 	function getAppState() {
 		return $this->app_state;
+	}
+	
+	/**
+	 * Get ActionInner from app_state variable ( $this->getAppState()->getActionInner() )
+	 */
+	public function getActionInner() {
+		return $this->getAppState()->getActionInner();
 	}
 }
 ?>

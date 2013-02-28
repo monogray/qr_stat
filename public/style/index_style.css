@@ -46,14 +46,14 @@ a:hover{
 h1{
 	font-variant:small-caps;
 	margin-top:0;
-	color:#FF5A00;
+	color:#ffffff;
 	text-transform:uppercase;
 	font-size:1.5em;
 }
 h2{
 	font-variant:small-caps;
 	margin-top:0;
-	color:#FF5A00;
+	color:#ffffff;
 	text-transform:uppercase;
 	font-size:1.1em;
 }
@@ -64,6 +64,7 @@ form{
 textarea{
 	float:left;
 	width:100%;
+	height:500px;
 	margin:0;
 	padding:0;
 }
@@ -194,8 +195,110 @@ input[type="submit"]{
 
 /* SITE ADMINKA _________________________________________________________ */
 /* LAYOUTS _________________________________________________________ */
+.img_arr_item{
+	float:left;
+	clear:left;
+	margin-bottom:15px;
+}
+.drop_img_arr{
+	float:left;
+}
 .img_arr_img{
 	float:left;
 	clear:left;
 	margin-bottom:2px;
+}
+
+
+
+/* SAAS ADMINKA _________________________________________________________ */
+
+/* LAYOUTS _________________________________________________________ */
+#main_menu_container{
+	float:left;
+	width:15%;
+	background-color:#000000;
+	color:#ffffff;
+}
+#main_menu_container a{
+	color:#ffffff;
+	float:left;
+	width:90%;
+	padding:3% 5% 3% 5%;
+	font-size:1.1em;
+}
+#main_menu_container a:hover{
+	background-color:#4d4d4d;
+}
+#main_content_container{
+	float:left;
+	width:82%;
+	margin-left:1%;
+	padding:0.5%;
+	background-color:#6c6c6c;
+	color:#ffffff;
+}
+#main_content_container a{
+	color:#ffffff;
+}
+
+/*ISSUE*/
+#property_link_container{
+	float:left;
+	width:100%;
+}
+.main_menu_add_property_link{
+	float:left;
+	width:10%;
+	margin-right:10px;
+	margin-bottom:10px;
+	background-color:#000000;
+	padding:4px;
+	text-align:center;
+}
+.issue_item_container{
+	float:left;
+	width:99%;
+	padding:0.5%;
+	background-color:#dedede;
+	margin-bottom:20px;
+	
+	background: url(../img/bg/light_4.png);
+}
+.issue_item_container h2{
+	float:left;
+	background-color:#484848;
+	padding:0.5%;
+	margin:-0.51%;
+	width:100.1%;
+	
+	background: url(../img/bg/dark_2.png);
+}
+.issue_item_content_container{
+	float:left;
+	padding:0;
+	margin-top:15px;
+	color:#000000;
+}
+.issue_item_content_container a{
+	color:#000000 !important;
+}
+.issue_item_text_container{
+	float:left;
+	width:100%;
+	font-size:0.7em;
+	
+	height:100px;
+	overflow:auto;
+}
+
+.issue_item_container[css_class="text_one_col"] {
+}
+
+.issue_item_container[css_class="portfolio"] {
+	width:31.33%;
+	height:200px;
+	margin-left:0.5%;
+	margin-right:0.5%;
+	overflow:auto;
 }

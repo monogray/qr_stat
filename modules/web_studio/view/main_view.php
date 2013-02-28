@@ -9,16 +9,15 @@ class WebStudioMainView extends View_Core{
 		$template = new WebStudioDefaultTemplate();
 		$this->setTemplate($template);
 		
-		include_once 'layouts/mono_layouts.php';
-		$this->layout = new MonoLayouts();
-		
-		include_once 'layouts/html_entity/entity.php';
-		include_once 'layouts/html_entity/div.php';
+		$this->initFormsLayouts();
+		$this->initLayout();
 	}
 	
-	protected function initFormsLayouts() {
-		require_once 'layouts/form_layouts.php';
-		$this->form = new FormsLayout();
+	// Override
+	protected function drawInHeader() {
+		echo'<script type="text/javascript" src="modules/web_studio/public/js/index.js"></script>
+			<script type="text/javascript">
+			</script>';
 	}
 	
 	public function draw() {
@@ -57,6 +56,16 @@ class WebStudioMainView extends View_Core{
 		$_main_menu = $_entity->getMainMenu();
 		$_issue = $_entity->getIssue();
 		
+		// Logo
+		Entity::initAndDrawHeader_st('div', 'id', 'main_logo_container');
+			$_logo_img = new Entity();
+			$_logo_img->init('img', 'id', 'main_logo', 'self_closed')->addAttr('src', 'modules/web_studio/public/img/logo.png');
+			
+			Entity::inst()->init('a', 'id', 'main_logo_link')->addAttr('href', '?chapter=index')
+				->addContent($_logo_img)
+				->draw();
+		Entity::drawFooter_st('div', 'main_logo_container');
+		
 		// Main menu
 		Entity::inst()->init('div', 'id', 'main_menu_container')->drawHeader();
 			for ($i = 0; $i < $_main_menu->len; $i++) {
@@ -64,25 +73,40 @@ class WebStudioMainView extends View_Core{
 			}
 		Entity::drawFooter_st('div', 'main_menu_container');
 		
+		// Main container
 		Entity::inst()->init('div', 'id', 'main_container_caption')->drawHeader();
-			echo $_main_menu->name[$_main_menu->is_current_chapter];
+			Entity::inst()->init('h1', 'class', 'portfolio_item_caption')->addContent($_main_menu->name[$_main_menu->is_current_chapter])->draw();
 		Entity::drawFooter_st('div', 'main_container_caption');
 		
 		Entity::inst()->init('div', 'id', 'main_container')->drawHeader();
-				
+		
+		Entity::inst()->init('div', 'id', 'portfolio_item_invisible_background')->draw();
+		
 		for ($i = 0; $i < $_issue->len; $i++) {
 			Entity::inst()->init('div', 'class', 'portfolio_item')->drawHeader();
-			echo  $_issue->name[$i].'<br/>';
-			echo  $_issue->summary[$i].'<br/>';
-			
-			$_img_len = count($_issue->img_arr_array[$i]);
-			Entity::inst()->init('div', 'class', 'portfolio_img_container')->drawHeader();
-			for ($j = 0; $j < $_img_len; $j++) {
-				Entity::inst()->init('img', 'class', 'portfolio_img', 'self_closed')
-				->addAttr('src', Settings::$path_to_attachments_dir.'issue/'.$_issue->id[$i].'/'.$_issue->img_arr_array[$i][$j])
-				->draw();
-			}
-			Entity::drawFooter_st('div', 'portfolio_img_container');
+				
+				$_current_val = $_issue->getPropertyValueByPropertieFieldsName($_issue->id[$i], 'is_caption_display');
+				if($_current_val != 'false'){
+					Entity::inst()->init('h2', 'class', 'portfolio_item_caption')->addContent($_issue->name[$i])->draw();
+				}
+				
+				if(isset($_issue->img_arr_array_2[$i][0]) && $_issue->img_arr_array_2[$i][0] != ''){
+					$_caption_img = Entity::inst()->init('img', 'class', 'item_image_caption_img')
+						->addAttr('src', Settings::$path_to_attachments_dir.'issue/'.$_issue->id[$i].'/img_arr_2/'.$_issue->img_arr_array_2[$i][0])
+						->toString();
+					Entity::inst()->init('div', 'class', 'item_image_caption')->addContent($_caption_img)->draw();
+				}
+				
+				Entity::inst()->init('div', 'class', 'portfolio_item_summary')->addContent($_issue->summary[$i])->draw();
+				
+				$_img_len = count($_issue->img_arr_array[$i]);
+				Entity::inst()->init('div', 'class', 'portfolio_img_container')->drawHeader();
+				for ($j = 0; $j < $_img_len; $j++) {
+					Entity::inst()->init('img', 'class', 'portfolio_img', 'self_closed')
+					->addAttr('src', Settings::$path_to_attachments_dir.'issue/'.$_issue->id[$i].'/'.$_issue->img_arr_array[$i][$j])
+					->draw();
+				}
+				Entity::drawFooter_st('div', 'portfolio_img_container');
 			Entity::drawFooter_st('div', 'portfolio_item');
 		}
 		Entity::drawFooter_st('div', 'main_container');

@@ -12,7 +12,9 @@ class IssueView extends ViewEntities {
 											'list_by_menu'		=> 'list_by_menu',
 											'create_by_menu'	=> 'create_by_menu',
 											'create_by_issue'	=> 'create_by_issue',
-											'list_by_issue'		=> 'list_by_issue');
+											'list_by_issue'		=> 'list_by_issue',
+											'drop_img_arr'		=> 'drop_img_arr',
+											'drop_img_arr_2'	=> 'drop_img_arr_2');
 	
 	function IssueView($_app_state) {
 		parent::ViewEntities();
@@ -23,13 +25,17 @@ class IssueView extends ViewEntities {
 	
 	public function process() {
 		parent::process();
-		if($this->app_state->getActionInner() == $this->entity_actions['list_by_menu']){
+		if($this->getAppState()->getActionInner() == $this->entity_actions['list_by_menu']){
 			$this->processListByMenu();
-		}else if($this->app_state->getActionInner() == $this->entity_actions['create_by_menu']){
+		}else if($this->getAppState()->getActionInner() == $this->entity_actions['create_by_menu']){
 			$this->processView();
-		}else if($this->app_state->getActionInner() == $this->entity_actions['list_by_issue']){
+		}else if($this->getAppState()->getActionInner() == $this->entity_actions['list_by_issue']){
 			$this->processListByMenu();
-		}else if($this->app_state->getActionInner() == $this->entity_actions['create_by_issue']){
+		}else if($this->getAppState()->getActionInner() == $this->entity_actions['create_by_issue']){
+			$this->processView();
+		}else if($this->getAppState()->getActionInner() == $this->entity_actions['drop_img_arr']){
+			$this->processView();
+		}else if($this->getAppState()->getActionInner() == $this->entity_actions['drop_img_arr_2']){
 			$this->processView();
 		}
 	}
@@ -68,7 +74,6 @@ class IssueView extends ViewEntities {
 				
 			echo '</tr>';
 		}
-	
 		echo '<table>';
 	}
 	
@@ -100,18 +105,26 @@ class IssueView extends ViewEntities {
 	
 	protected function processView() {
 		$_entity = $this->getAppData();
+		$_id = $_entity->id[0];
 	
-		Entity::inst()->init('h1')->setContent($this->chapter_name.' view. (id '.$_entity->id[0].')')->draw();
+		Entity::inst()->init('h1')->setContent($this->chapter_name.' view. (id '.$_id.')')->draw();
+		
+		// Get Parent link
+		if($_entity->menu[0] != -1)
+			$_par_link = '?chapter=admin&action=issue_list_by_menu&id='.$_entity->menu[0];
+		else 
+			$_par_link = '?chapter=admin&action=issue_list_by_issue&id='.$_entity->parent_issue_id[0];
 	
 		$this->default_layouts->Draw_DivStart('block_area_2', '');
 			$this->default_layouts->Draw_HyperLink($this->setUrl('admin'), '&larr; Administration', 'list_link_back');
 			$this->default_layouts->Draw_HyperLink($this->setUrl('admin', $this->entity_name), '&larr; '.$this->chapter_name, 'list_link_back');
+			$this->default_layouts->Draw_HyperLink($_par_link, '&larr; Parent', 'list_link_back');
 		$this->default_layouts->Draw_DivEnd();
 		
 		Entity::inst()->init('div', 'class', 'block_area')->drawHeader();
 		
 		$this->initFormsLayouts();
-		$this->form->formHeader( $this->setUrl('admin', $this->entity_name.'_'.$this->entity_actions['update'], $_entity->id[0]) );
+		$this->form->formHeader( $this->setUrl('admin', $this->entity_name.'_'.$this->entity_actions['update'], $_id) );
 		$this->form->formSubmit('Save');
 		
 		Entity::inst()->init('div', 'class', 'block_area_2')->drawHeader();
@@ -126,21 +139,67 @@ class IssueView extends ViewEntities {
 			$this->form->inputTextarea('Additional description ', 80, 20, $_entity->description_2[0], 'description_2', 'edit_textfield_3');
 		Entity::drawFooter_st('div', 'block_area_2');
 		
+		// Attachments
+		// 1 array
 		Entity::inst()->init('div', 'class', 'block_area_2')->drawHeader();
+			Entity::inst()->init('h2')->setContent('Images array 1')->draw();
+		
 			$this->form->inputFile('Attchments ', 'img_arr[]', true);
 			
 			Entity::inst()->init('div', 'class', 'block_area_2')->drawHeader();
 			$_len = count($_entity->img_arr_array[0]);
 			for ($i = 0; $i < $_len; $i++) {
-				Entity::inst()->init('img', 'class', 'img_arr_img', 'self_closed')
-					->addAttr('src', Settings::$path_to_attachments_dir.'issue/'.$_entity->id[0].'/'.$_entity->img_arr_array[0][$i])
-					->addAttr('width', '150px')
-					->draw();
+				Entity::initAndDrawHeader_st('div', 'class', 'img_arr_item');
+					Entity::inst()->init('img', 'class', 'img_arr_img', 'self_closed')
+						->addAttr('src', Settings::$path_to_attachments_dir.'issue/'.$_id.'/'.$_entity->img_arr_array[0][$i])
+						->addAttr('width', '150px')
+						->draw();
+					
+					$_drop_link = Entity::inst()->init('a', 'class', 'img_arr_drop_link')->addAttr('href', '?chapter=admin&action=issue_drop_img_arr&id='.$_id.'&sub_id='.$i)->addContent('drop')->toString();
+						
+					Entity::initAndAddContentAndDraw_st('div', 'class', 'drop_img_arr', 'closed', $_drop_link);
+				Entity::drawFooter_st('div', 'img_arr_item');
 			}
 			Entity::drawFooter_st('div', 'block_area_2');
 			
 		Entity::drawFooter_st('div', 'block_area_2');
 		
+		// 2 array
+		Entity::inst()->init('div', 'class', 'block_area_2')->drawHeader();
+			Entity::inst()->init('h2')->setContent('Images array 2')->draw();
+		
+			$this->form->inputFile('Attchments ', 'img_arr_2[]', true);
+			
+			Entity::inst()->init('div', 'class', 'block_area_2')->drawHeader();
+			$_len = count($_entity->img_arr_array_2[0]);
+			for ($i = 0; $i < $_len; $i++) {
+				Entity::initAndDrawHeader_st('div', 'class', 'img_arr_item');
+					Entity::inst()->init('img', 'class', 'img_arr_img', 'self_closed')
+						->addAttr('src', Settings::$path_to_attachments_dir.'issue/'.$_id.'/img_arr_2/'.$_entity->img_arr_array_2[0][$i])
+						->addAttr('width', '150px')
+						->draw();
+					
+					$_drop_link = Entity::inst()->init('a', 'class', 'img_arr_drop_link')->addAttr('href', '?chapter=admin&action=issue_drop_img_arr_2&id='.$_id.'&sub_id='.$i)->addContent('drop')->toString();
+						
+					Entity::initAndAddContentAndDraw_st('div', 'class', 'drop_img_arr', 'closed', $_drop_link);
+				Entity::drawFooter_st('div', 'img_arr_item');
+			}
+			Entity::drawFooter_st('div', 'block_area_2');
+		Entity::drawFooter_st('div', 'block_area_2');
+		
+		// Properties
+		Entity::inst()->init('div', 'class', 'block_area_2')->drawHeader();
+		if( isset($_entity->entity_properties_table) ){
+			Entity::inst()->init('h2')->setContent('Properties')->draw();
+			$_properties_table = $_entity->properties_table;
+			for ($i = 0; $i < $_properties_table->len; $i++) {
+				if($_properties_table->type[$i] == 'text'){
+					$_current_val = $_entity->getPropertyValue($_entity->id[0], $_properties_table->id[$i]);
+					$this->form->inputText($_properties_table->name[$i].' ', 30, $_current_val, $_properties_table->field_name[$i]);
+				}
+			}
+		}
+		Entity::drawFooter_st('div', 'block_area_2');
 		
 		$this->form->formSubmit('Save');
 		$this->form->formFooter();
